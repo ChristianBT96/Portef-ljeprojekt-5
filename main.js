@@ -28,6 +28,7 @@ app.listen(port, () =>{
 
 //  DATABASE //
 // Using three tables in the database
+
 // Three tables cafes, users, favorites //
 // The favorites table is a join table between cafes and users
 
