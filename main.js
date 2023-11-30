@@ -70,7 +70,6 @@ app.listen(port, () =>{
 
 
 
-
         // // // // // // // // // //
             // GET ENDPOINTS //
         // // // // // // // // // //
@@ -91,8 +90,9 @@ app.get('/cafes/all',(req, res)=>{
 // Endpoint for a specific cafe
 // /cafes/:cafe_id
 app.get('/cafes/:cafe_id',(req, res)=>{
+    // Get the cafe_id from the request parameters
     const cafe_id = req.params.cafe_id;
-
+    // Query the database for the cafe with the cafe_id
     connection.query('SELECT * FROM cafes WHERE cafe_id = ?',
         [cafe_id]
         ,(error,results)=>{
@@ -104,24 +104,38 @@ app.get('/cafes/:cafe_id',(req, res)=>{
         });
 });
 
-// Endpoint for all cafes in a specific city
-// /cafes/?city=city
-app.get('/cafes',(req, res)=>{
-    const city = req.query.city;
+// Dynamic endpoint for all cafes
+// /cafes?key=value
+app.get('/cafes', (req, res) => {
 
-    connection.query('SELECT * FROM cafes WHERE city = ?',
-        [city]
-        ,(error,results)=>{
-            if (error) {
-                console.error(error);
-                res.status(500).send("Internal Server Error");
-            } else if (results.length === 0) {
-                res.status(404).send("City not found in database");
+    // Get the query parameters from the request
+    const queryParameters = req.query;
+    // Get the keys from the query parameters
+    const whereClauseKeys = Object.keys(queryParameters)
+    // Create an array of usable sql clauses
+    const usableSqlKeyClausesArray = whereClauseKeys.map(key => {
+        return `${key} = ?`
+    })
+
+    // If no parameters are provided, send an error message
+    if (usableSqlKeyClausesArray.length === 0) {
+        res.status(400).send("No parameters provided");
+    } else {
+        // Get the values from the query parameters
+        const queryValueArray = Object.values(queryParameters);
+        // Query the database for the cafes with the query parameters
+        connection.query(`SELECT * FROM cafes WHERE ${usableSqlKeyClausesArray.join(' AND ')}`, queryValueArray, (error, results) => {
+            if (results.length === 0) {
+                res.status(404).send("No cafes found");
             } else {
                 res.send(results);
             }
         });
+    }
+
 });
+
+
 
 // // // // // // // // // // // // // // // //
     // GET ENDPOINTS FOR THE USERS TABLE //
@@ -141,6 +155,23 @@ app.get('/users/:user_id',(req, res)=>{
 
     connection.query('SELECT * FROM users WHERE user_id = ?',
         [user_id]
+        ,(error,results)=>{
+            if(results.length === 0) {
+                res.status(404).send("User not found in database");
+            } else {
+                res.send(results);
+            }
+        });
+});
+
+//  Endpoint for a specific username
+// /users/?username=username
+
+app.get('/users',(req, res)=>{
+    const username = req.query.username;
+
+    connection.query('SELECT * FROM users WHERE username = ?',
+        [username]
         ,(error,results)=>{
             if(results.length === 0) {
                 res.status(404).send("User not found in database");
@@ -263,10 +294,12 @@ app.post('/users/new',(req,res)=>{
 
 // Endpoint for a user to add a cafe to their favorites
 // /users/:user_id/favorites/new
-app.post('/users/:user_id/favorites/new/:cafe_id',(req,res)=>{
-    const user_id = req.params.user_id;
-    const cafe_id = req.params.cafe_id;
+app.post('/favorites/new',(req,res)=>{
+
+    const user_id = req.body.user_id;
+    const cafe_id = req.body.cafe_id;
     const comment = req.body.comment;
+
 
     // First check if the user already has the cafe in their favorites
     connection.query('SELECT * FROM favorites WHERE user_id = ? and cafe_id = ?',

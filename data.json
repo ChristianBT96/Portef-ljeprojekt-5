@@ -20,5 +20,11 @@
   "date_of_birth": "1965-03-15"
 }
 
+// Random review to test post request
+{
+  "user_id": 2,
+  "cafe_id": 2,
+  "comment": "Nice place"
+}
 
 
