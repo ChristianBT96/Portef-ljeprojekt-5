@@ -1,0 +1,24 @@
+// Random cafe to test post request
+{
+  "name": "The Bean",
+  "city": "Copenhagen",
+  "size": "Medium",
+  "atmosphere": "Cozy",
+  "wifi": true,
+  "music": true,
+  "coffee_quality": "High",
+  "food_price": "High"
+}
+
+// Random user to test post request
+{
+  "username": "user4",
+  "password": "password4",
+  "email": "user4@example.com",
+  "first_name": "Micheal",
+  "last_name": "Scott",
+  "date_of_birth": "1965-03-15"
+}
+
+
+
