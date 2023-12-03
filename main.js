@@ -180,6 +180,7 @@ app.get('/cafes', (req, res) => {
 // // // // // // // // // // // // // // // //
 
 // Endpoint for all the data of the users
+// /users/all
 app.get('/users/all',(req, res)=>{
     connection.query('SELECT * FROM users',(error,results)=>{
         res.send(results);
@@ -238,6 +239,7 @@ app.get('/users', (req, res) => {
 // // // // // // // // // // // // // // // // //
 
 // Endpoint for all the data of the favorites
+// /favorites/all
 app.get('/favorites/all', (req, res) => {
     connection.query('SELECT * FROM favorites', (error, results) => {
         res.send(results);
@@ -411,7 +413,17 @@ app.post('/favorites/new',(req,res)=>{
 
 // Endpoint for a list of all endpoints
 app.get('/endpoints', (req, res) => {
-   res.send('WIP'); // Make a list of all endpoints, when all endpoints have been made.
+   res.send('Get endpoints:\n' +
+       'Cafe endpoints: /cafes/all - /cafes/:dafe_id - cafes/city/:city - cafes/size/:size /cafes?key=value\n' +
+       '\n' +
+       'User endpoints: /users/all - /users/:user_id - /users?key=value\n' +
+       '\n' +
+       'Favorite endpoints: /favorites/all - /favorites/:user_id - /favorites?key=value\n' +
+       '\n' +
+       'Post endpoints:\n' +
+       'cafes/new (add new cafe)\n' +
+       'users/new (add new user)\n' +
+       'favorites/new (add new favorite)'); // Make a list of all endpoints, when all endpoints have been made.
 });
 
 // Catch all endpoint if the user tries to access a non-existing endpoint
