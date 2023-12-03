@@ -32,7 +32,7 @@ app.listen(port, () =>{
 // Three tables cafes, users, favorites //
 // The favorites table is a join table between cafes and users
 
-// Table -- cafes //
+    // Table -- cafes //
 // cafe_id -- int (primary key)
 // name -- varchar
 // city -- varchar
@@ -43,7 +43,7 @@ app.listen(port, () =>{
 // coffee_quality -- varchar
 // food_price -- varchar
 
-// Table -- users //
+    // Table -- users //
 // user_id -- int (primary key)
 // username -- varchar
 // password -- varchar
@@ -52,7 +52,7 @@ app.listen(port, () =>{
 // last_name -- varchar
 // date_of_birth -- date
 
-// Table -- favorites //
+    // Table -- favorites //
 // user_id -- int
 // cafe_id -- int
 // comment -- varchar
@@ -104,6 +104,43 @@ app.get('/cafes/:cafe_id',(req, res)=>{
             }
         });
 });
+
+// Endpoint for all the cafes in a specific city
+// /cafes/city/:city
+
+app.get('/cafes/city/:city',(req, res)=>{
+    // Get the city from the request parameters
+    const city = req.params.city;
+    // Query the database for the cafes in the city
+    connection.query('SELECT * FROM cafes WHERE city = ?',
+        [city]
+        ,(error,results)=>{
+            if(results.length === 0) {
+                res.status(404).send("No cafes found in city");
+            } else {
+                res.send(results);
+            }
+        });
+});
+
+// Endpoint for all the cafes with a specific size
+// /cafes/size/:size
+
+app.get('/cafes/size/:size',(req, res)=>{
+    // Get the size from the request parameters
+    const size = req.params.size;
+    // Query the database for the cafes with the size
+    connection.query('SELECT * FROM cafes WHERE size = ?',
+        [size]
+        ,(error,results)=>{
+            if(results.length === 0) {
+                res.status(404).send("No cafes found with size");
+            } else {
+                res.send(results);
+            }
+        });
+});
+
 
 // Dynamic query endpoint for cafes
 // /cafes?key=value
@@ -222,6 +259,7 @@ app.get('/favorites/:user_id', (req, res) => {
             }
         });
 });
+
 
 // Dynamic query endpoint for favorites
 // /favorites?key=value
