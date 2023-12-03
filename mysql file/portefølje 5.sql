@@ -62,6 +62,3 @@ select * from cafes;
 select * from users;
 select * from favorites;
 
-SET SQL_SAFE_UPDATES = 0;
-
-delete from favorites where user_id = 2;
