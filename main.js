@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: 'Espergærde30602',
+    password: '',
     database: 'portefølje_5'
 })
 // Starting the application
@@ -423,12 +423,12 @@ app.get('/endpoints', (req, res) => {
        'Post endpoints:\n' +
        'cafes/new (add new cafe)\n' +
        'users/new (add new user)\n' +
-       'favorites/new (add new favorite)'); // Make a list of all endpoints, when all endpoints have been made.
+       'favorites/new (add new favorite)');
 });
 
 // Catch all endpoint if the user tries to access a non-existing endpoint
 app.get('*', (req, res) => {
-    res.status(404).send("Endpoint does not exist and could try the '/endpoints' for a list of valid endpoints");
+    res.status(404).send("Endpoint does not exist, try the '/endpoints' for a list of valid endpoints");
 });
 
 
