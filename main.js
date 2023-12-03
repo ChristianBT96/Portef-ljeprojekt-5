@@ -105,7 +105,7 @@ app.get('/cafes/:cafe_id',(req, res)=>{
         });
 });
 
-// Dynamic endpoint for all cafes
+// Dynamic query endpoint for cafes
 // /cafes?key=value
 app.get('/cafes', (req, res) => {
 
@@ -127,7 +127,7 @@ app.get('/cafes', (req, res) => {
         // Query the database for the cafes with the query parameters
         connection.query(`SELECT * FROM cafes WHERE ${usableSqlKeyClausesArray.join(' AND ')}`, queryValueArray, (error, results) => {
             if (results.length === 0) {
-                res.status(404).send("No cafes found");
+                res.status(404).send("No cafe(s) found");
             } else {
                 res.send(results);
             }
@@ -165,21 +165,35 @@ app.get('/users/:user_id',(req, res)=>{
         });
 });
 
-//  Endpoint for a specific username
-// /users/?username=username
+// Dynamic query endpoint for users
+// /users?key=value
+app.get('/users', (req, res) => {
 
-app.get('/users',(req, res)=>{
-    const username = req.query.username;
+        // Get the query parameters from the request
+        const queryParameters = req.query;
+        // Get the keys from the query parameters
+        const whereClauseKeys = Object.keys(queryParameters)
+        // Create an array of usable sql clauses
+        const usableSqlKeyClausesArray = whereClauseKeys.map(key => {
+            return `${key} = ?`
+        })
 
-    connection.query('SELECT * FROM users WHERE username = ?',
-        [username]
-        ,(error,results)=>{
-            if(results.length === 0) {
-                res.status(404).send("User not found in database");
-            } else {
-                res.send(results);
-            }
-        });
+        // If no parameters are provided, send an error message
+        if (usableSqlKeyClausesArray.length === 0) {
+            res.status(400).send("No parameters provided");
+        } else {
+            // Get the values from the query parameters
+            const queryValueArray = Object.values(queryParameters);
+            // Query the database for the users with the query parameters
+            connection.query(`SELECT * FROM users WHERE ${usableSqlKeyClausesArray.join(' AND ')}`, queryValueArray, (error, results) => {
+                if (results.length === 0) {
+                    res.status(404).send("No user(s) found");
+                } else {
+                    res.send(results);
+                }
+            });
+        }
+
 });
 
 // // // // // // // // // // // // // // // // //
@@ -209,7 +223,35 @@ app.get('/favorites/:user_id', (req, res) => {
         });
 });
 
+// Dynamic query endpoint for favorites
+// /favorites?key=value
 
+app.get('/favorites', (req, res) => {
+    // Get the query parameters from the request
+    const queryParameters = req.query;
+    // Get the keys from the query parameters
+    const whereClauseKeys = Object.keys(queryParameters)
+    // Create an array of usable sql clauses
+    const usableSqlKeyClausesArray = whereClauseKeys.map(key => {
+        return `${key} = ?`
+    })
+
+    // If no parameters are provided, send an error message
+    if (usableSqlKeyClausesArray.length === 0) {
+        res.status(400).send("No parameters provided");
+    } else {
+        // Get the values from the query parameters
+        const queryValueArray = Object.values(queryParameters);
+        // Query the database for the users with the query parameters
+        connection.query(`SELECT * FROM favorites WHERE ${usableSqlKeyClausesArray.join(' AND ')}`, queryValueArray, (error, results) => {
+            if (results.length === 0) {
+                res.status(404).send("No favorite found");
+            } else {
+                res.send(results);
+            }
+        });
+    }
+});
 
 
 
@@ -320,18 +362,6 @@ app.post('/favorites/new',(req,res)=>{
         });
 
 });
-
-// Endpoint for a user to add a comment to a cafe in their favorites
-// /users/:user_id/favorites/:cafe_id/comment
-app.post('/users/:user_id/favorites/:cafe_id/comment',(req,res)=>{
-    const user_id = req.params.user_id;
-    const cafe_id = req.params.cafe_id;
-
-    // First check if the user has the cafe in their favorites
-});
-
-
-
 
 
 
