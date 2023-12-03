@@ -6,8 +6,8 @@ use portefølje_5;
 -- Creating Cafes Table
 CREATE TABLE cafes (
     cafe_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255),
-    city VARCHAR(100),
+    name VARCHAR(255) NOT NULL,
+    city VARCHAR(100) NOT NULL,
     size VARCHAR(50),
     atmosphere VARCHAR(50),
     wifi BOOLEAN,
@@ -19,21 +19,22 @@ CREATE TABLE cafes (
 -- Creating Users Table
 CREATE TABLE users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50),
-    password VARCHAR(255),
-    email VARCHAR(100),
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    date_of_birth DATE
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    date_of_birth DATE NOT NULL
 );
 
 -- Creating Favorites Table
 CREATE TABLE favorites (
-    favorite_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT,
     cafe_id INT,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (cafe_id) REFERENCES cafes(cafe_id)
+    comment VARCHAR(255),
+    PRIMARY KEY (user_id, cafe_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (cafe_id) REFERENCES cafes(cafe_id) ON DELETE CASCADE
 );
 
 -- Inserting test cafes
@@ -51,11 +52,11 @@ VALUES
     ('user3', 'password3', 'user3@example.com', 'Alice', 'Johnson', '1995-08-20');
 
 -- Inserting test favorites
-INSERT INTO favorites (user_id, cafe_id)
+INSERT INTO favorites (user_id, cafe_id, comment)
 VALUES
-    (1, 2),
-    (2, 3),
-    (3, 1);
+    (1, 2, "Great atmosphere"),
+    (2, 3, "Lovely staff"),
+    (3, 1, "The wait time is very low");
 
 select * from cafes;
 select * from users;
@@ -63,4 +64,4 @@ select * from favorites;
 
 SET SQL_SAFE_UPDATES = 0;
 
-delete from cafes where name = "The Bean";
+delete from favorites where user_id = 2;
